@@ -3,7 +3,7 @@
   <a href="https://store.steampowered.com">
     <img src="https://store.cloudflare.steamstatic.com/public/shared/images/header/logo_steam.svg?t=962016">
   </a>
-</p>
+</p> 
 
 ## Introduction
 
