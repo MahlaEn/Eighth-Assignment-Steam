@@ -1,5 +1,6 @@
 package Server;
 
+import Shared.Response;
 import netscape.javascript.JSObject;
 import org.cef.handler.CefClientHandler;
 import org.json.JSONObject;
@@ -16,7 +17,7 @@ public class ServerMain {
     private ServerSocket serverSocket;
     private ArrayList<ClientHandler>clients = new ArrayList<>();
     public static void main(String[] args) throws IOException {
-        ServerMain server = new ServerMain(1234);
+        ServerMain server = new ServerMain(2345);
         server.start();
     }
     public void start(){
@@ -41,30 +42,32 @@ public class ServerMain {
 
     private class ClientHandler extends Thread{
         private Socket socket;
-        private BufferedReader in;
+        private BufferedReader read;
         private PrintWriter out;
         public ClientHandler(Socket socket) throws IOException {
             this.socket = socket;
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.read = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream(), true);
         }
         public void run(){
             String inputLine;
             try{
-                inputLine=in.readLine();
+                inputLine=read.readLine();
                 while(inputLine!=null){
                     System.out.println("Received message from " + socket.getRemoteSocketAddress() + ": " + inputLine);
                     broadcast(inputLine);
                     JSONObject json=new JSONObject(inputLine);
                     switch (json.getString("Command")){
                         case "Login":
-                            out.println(Login(json));
+                            out.println(Response.Login(json));
                             break;
                         case "SignUp":
-                            out.println(SignUp(json));
+                            out.println(Response.SignUp(json));
                             break;
+                        case "List of available games":
+
                     }
-                    inputLine=in.readLine();
+                    inputLine=read.readLine();
                 }
             }
             catch (Exception e){
@@ -86,13 +89,5 @@ public class ServerMain {
                 client.out.println(message);
             }
         }
-    }
-    public boolean Login(JSONObject json){
-
-        return true;
-    }
-    public boolean SignUp(JSONObject json){
-
-        return true;
     }
 }

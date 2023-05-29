@@ -17,6 +17,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
+    implementation 'org.postgresql:postgresql:42.2.23'
 }
 
 test {
