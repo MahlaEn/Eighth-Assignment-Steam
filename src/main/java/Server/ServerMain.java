@@ -55,11 +55,12 @@ public class ServerMain {
                 inputLine=read.readLine();
                 while(inputLine!=null){
                     System.out.println("Received message from " + socket.getRemoteSocketAddress() + ": " + inputLine);
-                    broadcast(inputLine);
+//                    broadcast(inputLine);
                     JSONObject json=new JSONObject(inputLine);
                     switch (json.getString("Command")){
                         case "Login":
-                            out.println(Response.Login(json));
+                            JSONObject response=Response.Login(json);
+                            out.println(response);
                             break;
                         case "SignUp":
                             out.println(Response.SignUp(json));

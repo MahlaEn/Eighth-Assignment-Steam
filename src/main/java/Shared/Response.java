@@ -56,11 +56,11 @@ public class Response implements Serializable {
         ResultSet resultSet=(DB.query("SELECT * FROM \"Steam\".\"accounts\" \n"));
         while(resultSet.next()){
             if(resultSet.getString("Username").equals(username) && resultSet.getString("Password").equals(password)){
-                json.put("status",true);
+                json.put("status","true");
                 return json;
             }
         }
-        json.put("status",false);
+        json.put("status","false");
         return json;
     }
     public static JSONObject SignUp(JSONObject json) {

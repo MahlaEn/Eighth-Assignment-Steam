@@ -91,26 +91,41 @@ public class Request implements Serializable {
         return null;
     }
 
-    public static JSONObject showUserPage() throws IOException, SQLException {
-        System.out.println("Enter command :\n" + "1)List of available games\n" + "2)info about a specific game\n" + "3)Download a game\n" + "4)Logout");
-        int command=in.nextInt();
+    public static JSONObject showUserPage(int command) throws IOException, SQLException {
+        ConnectDB DB = new ConnectDB();
+        ResultSet resultSet;
         switch (command){
             case 1://List of available games
-
-                ConnectDB DB = new ConnectDB();
-                ResultSet resultSet=(DB.query("select * from Games"));
+                resultSet=(DB.query("select * from \"Steam\".\"Games\""));
                 while(resultSet.next()){
-                    System.out.println(resultSet.getString("Title"));
+                    toString(resultSet);
                 }
+                break;
 
             case 2://info about a specific game
-
+                System.out.println("Enter title of game :");
+                String title = in.nextLine();
+                resultSet=(DB.query("select * from \"Steam\".\"Games\""));
+                while(resultSet.next()){
+                    if(resultSet.getString("Title").equals(title)) {
+                        toString(resultSet);
+                    }
+                }
+                break;
             case 3://Download a game
-
-            case 4://Logout
+                //TODO
 
         }
 
         return null;
+    }
+    public static void toString(ResultSet resultSet) throws SQLException {
+        System.out.println(
+                "Title: "+resultSet.getString("Title") + "\nDeveloper: "+ resultSet.getString("Developer") +
+                "\nGenre: " + resultSet.getString("Genre") + "\nPrice: " + resultSet.getDouble("Price") +
+                "\nReviews: " + resultSet.getInt("Reviews") +
+                "\n____________________________________"
+        );
+
     }
 }
