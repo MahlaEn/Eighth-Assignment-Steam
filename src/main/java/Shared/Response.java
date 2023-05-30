@@ -2,10 +2,15 @@ package Shared;
 
 import org.json.JSONObject;
 
+import java.beans.Statement;
 import java.io.File;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static Shared.ConnectDB.statement;
 
 public class Response implements Serializable {
     private File file;
@@ -16,8 +21,6 @@ public class Response implements Serializable {
     public Response(String json) {
         this.json = json;
     }
-
-
     public File getFile() {
         return file;
     }
@@ -63,8 +66,33 @@ public class Response implements Serializable {
         json.put("status","false");
         return json;
     }
-    public static JSONObject SignUp(JSONObject json) {
+    public static JSONObject SignUp(JSONObject json) throws SQLException {
+        String username=json.getString("username");
+        String password=json.getString("password");
+        ConnectDB DB = new ConnectDB();
+        ResultSet resultSet=(DB.query("SELECT * FROM \"Steam\".\"accounts\""));
+        while(resultSet.next()){
+            if(resultSet.getString("Username").equals(username)){
+                json.put("status","false");
+                return json;
+            }
+        }
+        json.put("status","true");
+        String ID="2";
+        String sql = "INSERT INTO\"Steam\".\"accounts\" VALUES ('" + ID + "','" + username + "', '" +
+                password + "','" + json.getString("Birthday") + "')";
 
-        return null;
+        DB.query(sql);
+        return json;
+    }
+
+    public static void Downloaded(String json, String gameId) {
+        JSONObject jObj=new JSONObject(json);
+        ConnectDB DB=new ConnectDB();
+        String sql = "INSERT INTO\"Steam\".\"Downloads\" VALUES ('" +
+                jObj.getString("username") + "','" + gameId + "', '" +
+                '1' + "')";
+
+        DB.query(sql);
     }
 }

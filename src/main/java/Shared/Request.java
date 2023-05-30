@@ -5,6 +5,9 @@ import Server.ServerMain;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -91,7 +94,7 @@ public class Request implements Serializable {
         return null;
     }
 
-    public static JSONObject showUserPage(int command) throws IOException, SQLException {
+    public static JSONObject showUserPage(String json,int command) throws IOException, SQLException {
         ConnectDB DB = new ConnectDB();
         ResultSet resultSet;
         switch (command){
@@ -104,6 +107,7 @@ public class Request implements Serializable {
 
             case 2://info about a specific game
                 System.out.println("Enter title of game :");
+                in.nextLine();
                 String title = in.nextLine();
                 resultSet=(DB.query("select * from \"Steam\".\"Games\""));
                 while(resultSet.next()){
@@ -113,12 +117,39 @@ public class Request implements Serializable {
                 }
                 break;
             case 3://Download a game
+                downloadFile(json);
                 //TODO
 
         }
-
-        return null;
+        JSONObject jObj=new JSONObject(json);
+        return jObj;
     }
+
+    private static void downloadFile(String json) throws SQLException {
+        System.out.println("Enter title of game :");
+        in.nextLine();
+        String title = in.nextLine();
+        ConnectDB DB=new ConnectDB();
+        ResultSet resultSet;
+        resultSet=(DB.query("select * from \"Steam\".\"Games\""));
+        while(resultSet.next()){
+            if(resultSet.getString("Title").equals(title)) {
+                String sourcePath = resultSet.getString("File_path");
+                String destinationPath = "D:\\Uni\\Desktopimage.jpg";
+                try {
+                    Path source = Path.of(sourcePath);
+                    Path destination = Path.of(destinationPath);
+
+                    Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("Image downloaded successfully.");
+                    Response.Downloaded(json,resultSet.getString("ID"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public static void toString(ResultSet resultSet) throws SQLException {
         System.out.println(
                 "Title: "+resultSet.getString("Title") + "\nDeveloper: "+ resultSet.getString("Developer") +

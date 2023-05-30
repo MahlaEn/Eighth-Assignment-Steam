@@ -59,8 +59,7 @@ public class ServerMain {
                     JSONObject json=new JSONObject(inputLine);
                     switch (json.getString("Command")){
                         case "Login":
-                            JSONObject response=Response.Login(json);
-                            out.println(response);
+                            out.println(Response.Login(json));
                             break;
                         case "SignUp":
                             out.println(Response.SignUp(json));

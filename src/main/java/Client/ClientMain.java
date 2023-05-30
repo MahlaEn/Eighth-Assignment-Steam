@@ -43,7 +43,7 @@ public class ClientMain {
                                     if(command==4){//logout
                                         return;
                                     }
-                                    out.println(Request.showUserPage(command));
+                                    out.println(Request.showUserPage(String.valueOf(json),command));
                                     break;
                                 case "false":
                                     System.out.println("Try again !");
